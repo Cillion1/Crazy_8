@@ -1,5 +1,10 @@
 import java.util.ArrayList;
 
+/**
+ * comment
+ * @author 598258002
+ *
+ */
 public class Deck {
 	static ArrayList<Card> deck = new ArrayList<Card>();
 	String[] suits = {"♠", "♥", "♦", "♣"};
