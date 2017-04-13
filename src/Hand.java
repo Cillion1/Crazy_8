@@ -1,7 +1,8 @@
 import java.util.ArrayList;
-
+import java.util.Scanner;
 
 public class Hand {
+	Scanner keyb = new Scanner(System.in);
 	ArrayList<Card> hand = new ArrayList<Card>();
 	Deck deck;
 	Pile pile;
@@ -77,17 +78,18 @@ public class Hand {
     }
     
     public void playCard(int index) {
+    	System.out.println(holdSuit);
     	if (index < 0) {
     		addCard(deck.removeCard());
     	} else if (index + 1 <= getHandSize()) {
-			//if (getCard(temp).value.equals("8")) {
-				/*discardCard(temp);
-				play8(temp);
-				break;*/
-			if (pile.lastCard().suit.equals(getCard(index).suit) || pile.lastCard().value.equals(getCard(index).value)) {
+			if (getCard(index).value.equals("8")) {
+				discardCard(index);
+				play8(index);
+			} else if (holdSuit.equals(getCard(index).suit) || pile.lastCard().value.equals(getCard(index).value)) {
 				System.out.println("It works");
 				discardCard(index);
 				holdSuit = pile.lastCard().suit;
+				System.out.println(holdSuit);
 			} else {
 				System.out.println("Invalid Command. Invalid Card");
 			}
@@ -100,9 +102,10 @@ public class Hand {
     	pile.addCard(removeCard(index));
 	}
     
-    public void play8(int index, String newSuit) {
+    public void play8(int index) {
 		System.out.println("Choose any suit ([S]pades, [H]eart, [C]lub, [D]iamonds).");
 		do {
+			String newSuit = keyb.next();
 			if (newSuit.equalsIgnoreCase("S")) {
 				holdSuit = "♠";
 				System.out.println("New suit is Spades.");
