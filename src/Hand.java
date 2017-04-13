@@ -78,14 +78,13 @@ public class Hand {
     }
     
     public void playCard(int index) {
-    	System.out.println(holdSuit);
     	if (index < 0) {
     		addCard(deck.removeCard());
     	} else if (index + 1 <= getHandSize()) {
 			if (getCard(index).value.equals("8")) {
 				discardCard(index);
 				play8(index);
-			} else if (holdSuit.equals(getCard(index).suit) || pile.lastCard().value.equals(getCard(index).value)) {
+			} else if (pile.lastCard().suit.equals(getCard(index).suit) || pile.lastCard().value.equals(getCard(index).value)) {
 				System.out.println("It works");
 				discardCard(index);
 				holdSuit = pile.lastCard().suit;
