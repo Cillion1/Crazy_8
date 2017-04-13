@@ -43,7 +43,7 @@ public class Hand {
     /**
      * Return the number of cards in the hand.
      */
-    public int getCardCount() {
+    public int getHandSize() {
     	return hand.size();
     }
 
@@ -77,20 +77,16 @@ public class Hand {
     }
     
     public void playCard(int index) {
-		int temp = 0;
-		if (index == 0) {
-			// Add card to the hand from the deck
-			addCard(deck.removeCard());
-		}
-		temp = index - 1;
-		if (temp <= getCardCount()) {
-			if (getCard(temp).value.equals("8")) {
+    	if (index < 0) {
+    		addCard(deck.removeCard());
+    	} else if (index + 1 <= getHandSize()) {
+			//if (getCard(temp).value.equals("8")) {
 				/*discardCard(temp);
 				play8(temp);
 				break;*/
-			} else if (pile.lastCard().suit.equals(getCard(temp).suit) || pile.lastCard().suit.equals(getCard(temp).value)) {
+			if (pile.lastCard().suit.equals(getCard(index).suit) || pile.lastCard().value.equals(getCard(index).value)) {
 				System.out.println("It works");
-				discardCard(temp);
+				discardCard(index);
 				holdSuit = pile.lastCard().suit;
 			} else {
 				System.out.println("Invalid Command. Invalid Card");
@@ -128,4 +124,8 @@ public class Hand {
 			}
 		} while (true);
 	}
+    
+    public void pickUpCard() {
+		addCard(deck.removeCard());
+    }
 }

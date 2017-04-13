@@ -15,10 +15,10 @@ public class Main {
 		pile.addCard(deck.removeCard());
 		createHand();
 		do {
-			System.out.println(pile.pile);
 			printGame();
-			System.out.println(pile.getPileCount());
 			playerTurns(true);
+			printGame();
+			playerTurns(false);
 		} while (true);
 	}
 	
@@ -71,7 +71,7 @@ public class Main {
 					break;
 				}
 				temp = Integer.parseInt(chooseCard) - 1;
-				if (temp <= hand.getCardCount()) {
+				if (temp <= hand.getHandSize()) {
 					System.out.println("Card played: " + hand.getCard(temp).suit);
 					System.out.println("Hold suit: " + holdSuit);
 					System.out.println("Current Card: " + currentCard);
@@ -104,7 +104,7 @@ public class Main {
 		System.out.println(" _____");
 		System.out.println("|:::::|");
 		System.out.println("|:::::|");
-		System.out.println("|:::::|		  " + currentCard);
+		System.out.println("|:::::|		  " + pile.lastCard());
 		System.out.println("|:::::|");
 		System.out.println("|:::::|");
 		System.out.println(" -----");
@@ -155,17 +155,39 @@ public class Main {
 	
 	public static void playerTurns(boolean turn) {
 		if (turn == true) {
-			System.out.println(handOne.hand);
-			System.out.println("");
-			System.out.println("Player 1’s Turn!");
-			String chooseCard = keyb.next();
-			int temp = Integer.parseInt(chooseCard) - 1;
-			handOne.playCard(temp);
+			do {
+				System.out.println(handOne.hand);
+				System.out.println("");
+				System.out.println("Player 1’s Turn!");
+				String chooseCard = keyb.next();
+				int temp = Integer.parseInt(chooseCard) - 1;
+				if (temp < -1 || temp > handOne.getHandSize()) {
+					System.out.println("Invalid Command!");
+				} else {
+					handOne.playCard(temp);
+					if (temp == -1) {
+						System.out.println("Player 1 picked up a card.");
+					}
+					break;
+				}
+			} while (true);
 		} else if (turn == false) {
-			System.out.println(handTwo.hand);
-			System.out.println("");
-			System.out.println("Player 2’s Turn!");
-			playCard(handTwo);
+			do {
+				System.out.println(handTwo.hand);
+				System.out.println("");
+				System.out.println("Player 2’s Turn!");
+				String chooseCard = keyb.next();
+				int temp = Integer.parseInt(chooseCard) - 1;
+				if (temp < -1 || temp > handTwo.getHandSize()) {
+					System.out.println("Invalid Command!");
+				} else {
+					handTwo.playCard(temp);
+					if (temp == -1) {
+						System.out.println("Player 2 picked up a card.");
+					}
+					break;
+				}
+			} while (true);
 		}
 	}
 	
