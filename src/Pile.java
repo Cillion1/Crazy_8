@@ -4,10 +4,6 @@ import java.util.ArrayList;
 public class Pile {
 	ArrayList<Card> pile = new ArrayList<Card>();
 	
-	Pile() {
-		
-	}
-	
 	public void addCard(Card c) {
     	pile.add(c);
     }

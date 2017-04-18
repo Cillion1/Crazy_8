@@ -2,23 +2,23 @@ import java.util.Scanner;
 
 public class Main {
 	static Scanner keyb = new Scanner(System.in);
-	static Deck deck = new Deck();
 	static Pile pile = new Pile();
+	static Deck deck = new Deck(pile);
 	static Hand handTwo = new Hand(deck, pile);
 	static Hand handOne = new Hand(deck, pile);
 	static Card discard = null;
-	static Card currentCard = deck.removeCard();
-	static String holdSuit = currentCard.suit;
-
+	static String currentSuit;
+	
 	public static void main(String[] args) {
-		
 		pile.addCard(deck.removeCard());
+		currentSuit = pile.lastCard().suit;
 		createHand();
+		
 		do {
 			printGame();
-			playerTurns(true);
+			playGame(true);
 			printGame();
-			playerTurns(false);
+			playGame(false);
 		} while (true);
 	}
 	
@@ -61,45 +61,6 @@ public class Main {
 		}
 	}
 	
-	public static void playCard(Hand hand) {
-		int temp = 0;
-		do {
-			try {
-				String chooseCard = keyb.next();
-				if (chooseCard.equalsIgnoreCase("0")) {
-					pickUpCard(hand);
-					break;
-				}
-				temp = Integer.parseInt(chooseCard) - 1;
-				if (temp <= hand.getHandSize()) {
-					System.out.println("Card played: " + hand.getCard(temp).suit);
-					System.out.println("Hold suit: " + holdSuit);
-					System.out.println("Current Card: " + currentCard);
-					if (hand.getCard(temp).value.equals("8")) {
-						discardCard(temp, hand);
-						play8(temp, hand);
-						break;
-					} else if (holdSuit.equals(hand.getCard(temp).suit) || currentCard.value.equals(hand.getCard(temp).value)) {
-						System.out.println("It works");
-						discardCard(temp, hand);
-						holdSuit = currentCard.suit;
-						break;
-					} else {
-						System.out.println("Invalid Command. Invalid Card");
-					}
-				} else {
-					System.out.println("Invalid Command. Hand Overflow");
-				}
-			} catch (Exception e) {
-				System.out.println("Invalid Command. Please type the correct value to continue.");
-			}
-		} while (true);
-	}
-	
-	public static void pickUpCard(Hand hand) {
-		hand.addCard(deck.removeCard());
-	}
-	
 	public static void printGame() {
 		System.out.println(" _____");
 		System.out.println("|:::::|");
@@ -111,83 +72,17 @@ public class Main {
 		System.out.println("");
 	}
 	
-	public static void play8(int index, Hand hand) {
-		System.out.println("Choose any suit ([S]pades, [H]eart, [C]lub, [D]iamonds).");
-		do {
-			String newSuit = keyb.next();
-			if (newSuit.equalsIgnoreCase("S")) {
-				holdSuit = "♠";
-				System.out.println("New suit is Spades.");
-				break;
-			} else if (newSuit.equalsIgnoreCase("H")) {
-				holdSuit = "♥";
-				System.out.println("New suit is Hearts.");
-				break;
-			} else if (newSuit.equalsIgnoreCase("C")) {
-				holdSuit = "♣";
-				System.out.println("New suit is Clubs.");
-				break;
-			} else if (newSuit.equalsIgnoreCase("D")) {
-				holdSuit = "♦";
-				System.out.println("New suit is Diamonds.");
-				break;
-			} else {
-				System.out.println("Please type the correct letter to continue.");
-			}
-		} while (true);
-	}
-	
-	public static void play2(int index, Hand hand) {
-		
-	}
-	
-	public static void playJ(int index, Hand hand) {
-		
-	}
-	
-	public static void discardCard(int index, Hand hand) {
-		currentCard = hand.removeCard(index);
-		if (discard != null) {
-			deck.addCard(discard);
-		}
-		discard = currentCard;
-	}
-	
-	public static void playerTurns(boolean turn) {
-		if (turn == true) {
-			do {
-				System.out.println(handOne.hand);
-				System.out.println("");
-				System.out.println("Player 1’s Turn!");
-				String chooseCard = keyb.next();
-				int temp = Integer.parseInt(chooseCard) - 1;
-				if (temp < -1 || temp > handOne.getHandSize()) {
-					System.out.println("Invalid Command!");
-				} else {
-					handOne.playCard(temp);
-					if (temp == -1) {
-						System.out.println("Player 1 picked up a card.");
-					}
-					break;
-				}
-			} while (true);
-		} else if (turn == false) {
-			do {
-				System.out.println(handTwo.hand);
-				System.out.println("");
-				System.out.println("Player 2’s Turn!");
-				String chooseCard = keyb.next();
-				int temp = Integer.parseInt(chooseCard) - 1;
-				if (temp < -1 || temp > handTwo.getHandSize()) {
-					System.out.println("Invalid Command!");
-				} else {
-					handTwo.playCard(temp);
-					if (temp == -1) {
-						System.out.println("Player 2 picked up a card.");
-					}
-					break;
-				}
-			} while (true);
+	public static void playGame(boolean turn) {
+		if (turn) {
+			System.out.println(handOne.hand);
+			System.out.println("");
+			System.out.println("Player 1’s Turn!");
+			handOne.playCard();
+		} else if (!turn) {
+			System.out.println(handTwo.hand);
+			System.out.println("");
+			System.out.println("Player 2’s Turn!");
+			handTwo.playCard();
 		}
 	}
 	

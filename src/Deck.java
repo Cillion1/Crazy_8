@@ -1,21 +1,18 @@
 import java.util.ArrayList;
 
-/**
- * comment
- * @author 598258002
- *
- */
 public class Deck {
 	static ArrayList<Card> deck = new ArrayList<Card>();
 	String[] suits = {"♠", "♥", "♦", "♣"};
     String[] value = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
+    Pile pile;
     
-    Deck() {
+    Deck(Pile pile) {
     	for (int i = 0; i < suits.length; i++) {
     		for (int j = 0; j < value.length; j++) {
     			deck.add(new Card(suits[i], value[j]));				
 			}
 		}
+    	this.pile = pile;
     }
     
     /**
@@ -38,5 +35,17 @@ public class Deck {
     	if (deck.size() < 52) {
     		deck.add(c);
     	}
+    }
+    
+    public void returnDeck() {
+    	if (deck.size() <= 4) {
+    		for (int i = 0; i < pile.getPileCount(); i++) {
+				addCard(pile.removeCard(i));
+			}
+    	}
+    }
+    
+    public int getDeckSize() {
+    	return deck.size()-1;
     }
 }

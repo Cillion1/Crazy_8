@@ -6,53 +6,46 @@ public class Hand {
 	ArrayList<Card> hand = new ArrayList<Card>();
 	Deck deck;
 	Pile pile;
-	String holdSuit;
 
 	/**
-     * Constructor. Create a Hand object that is initially empty.
-     */
+	 * Constructor: A hand is an arraylist of cards.
+	 * @param deck the deck being used
+	 * @param pile the pile being used
+	 */
     public Hand(Deck deck, Pile pile) {
     	this.deck = deck;
     	this.pile = pile;
     }
 
     /**
-     * Add the card c to the hand.  c should be non-null.
-     * @throws NullPointerException if c is null.
+     * Adds a card to the hand
+     * @param c A card object
      */
     public void addCard(Card c) {
     	hand.add(c);
     }
 
     /**
-     * If the specified card is in the hand, it is removed.
-     */
-    public void removeCard(Card c) {
-    	hand.remove(c);
-    }
-
-    /**
-     * Remove the card in the specified position from the
-     * hand.  Cards are numbered counting from zero.
-     * @throws IllegalArgumentException if the specified 
-     *    position does not exist in the hand.
+     * Removes a card from a position in their hand
+     * @param position location of where the card is
+     * @return card of position
      */
     public Card removeCard(int position) {
     	return hand.remove(position);
     }
 
-    /**
-     * Return the number of cards in the hand.
-     */
+	/**
+	 * Gets the size of the hand
+	 * @return size of hand
+	 */
     public int getHandSize() {
     	return hand.size();
     }
 
     /**
-     * Get the card from the hand in given position, where 
-     * positions are numbered starting from 0.
-     * @throws IllegalArgumentException if the specified 
-     *    position does not exist in the hand.
+     * Gets a card from that position
+     * @param position location of where card is
+     * @return card in said position
      */
     public Card getCard(int position) {
     	return hand.get(position);
@@ -77,48 +70,73 @@ public class Hand {
     	
     }
     
-    public void playCard(int index) {
-    	if (index < 0) {
-    		addCard(deck.removeCard());
-    	} else if (index + 1 <= getHandSize()) {
-			if (getCard(index).value.equals("8")) {
-				discardCard(index);
-				play8(index);
-			} else if (pile.lastCard().suit.equals(getCard(index).suit) || pile.lastCard().value.equals(getCard(index).value)) {
-				System.out.println("It works");
-				discardCard(index);
-				holdSuit = pile.lastCard().suit;
-				System.out.println(holdSuit);
-			} else {
-				System.out.println("Invalid Command. Invalid Card");
-			}
-		} else {
-			System.out.println("Invalid Command. Hand Overflow");
-		}
+    /**
+     * Plays a card from a hand
+     * @param position position of where card is
+     */
+    public void playCard() {
+    	do {
+	    	// Checks to see if input is 0 or higher
+    		String chooseCard = keyb.next();
+    		try {
+				int position = Integer.parseInt(chooseCard) - 1;
+		    	if (position == -1) {
+		    		if (deck.getDeckSize() >= 0) {
+			    		System.out.println("Picked up a card.");
+			    		addCard(deck.removeCard());
+			    		deck.returnDeck();
+			    		break;
+		    		} else {
+		    			System.out.println("The deck is empty.");
+		    		}
+		    	} else if (position + 1 <= getHandSize()) {
+		    		// Checks what type of card it is
+					if (getCard(position).value.equals("8")) {
+						pile.addCard(removeCard(position));
+						play8();
+						deck.returnDeck();
+						break;
+					} else if (Main.currentSuit.equals(getCard(position).suit) || pile.lastCard().value.equals(getCard(position).value)) {
+						if (getCard(position).value.equals("2")) {
+							play2();
+						}
+						pile.addCard(removeCard(position));
+						Main.currentSuit = pile.lastCard().suit;
+						deck.returnDeck();
+						break;
+					} else {
+						System.out.println("Invalid Command. Invalid Card");
+					}
+				} else {
+					System.out.println("Invalid Command. Hand Overflow");
+				}
+    		} catch (Exception e) {
+    			System.out.println("Invalid Command!");
+    		}
+    	} while (true);
 	}
     
-    public void discardCard(int index) {
-    	pile.addCard(removeCard(index));
-	}
-    
-    public void play8(int index) {
+    /**
+     * Changes the suit to another.
+     */
+    public void play8() {
 		System.out.println("Choose any suit ([S]pades, [H]eart, [C]lub, [D]iamonds).");
 		do {
 			String newSuit = keyb.next();
 			if (newSuit.equalsIgnoreCase("S")) {
-				holdSuit = "♠";
+				Main.currentSuit = "♠";
 				System.out.println("New suit is Spades.");
 				break;
 			} else if (newSuit.equalsIgnoreCase("H")) {
-				holdSuit = "♥";
+				Main.currentSuit = "♥";
 				System.out.println("New suit is Hearts.");
 				break;
 			} else if (newSuit.equalsIgnoreCase("C")) {
-				holdSuit = "♣";
+				Main.currentSuit = "♣";
 				System.out.println("New suit is Clubs.");
 				break;
 			} else if (newSuit.equalsIgnoreCase("D")) {
-				holdSuit = "♦";
+				Main.currentSuit = "♦";
 				System.out.println("New suit is Diamonds.");
 				break;
 			} else {
@@ -127,7 +145,10 @@ public class Hand {
 		} while (true);
 	}
     
-    public void pickUpCard() {
-		addCard(deck.removeCard());
+    public void play2() {
+    	for (int i = 0; i < 2; i++) {
+    		addCard(deck.removeCard());
+		}
     }
 }
+
