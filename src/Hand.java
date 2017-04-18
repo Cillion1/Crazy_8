@@ -146,8 +146,12 @@ public class Hand {
 	}
     
     public void play2() {
-    	for (int i = 0; i < 2; i++) {
-    		addCard(deck.removeCard());
+		if (this.equals(Main.handOne)) {
+			Main.handTwo.addCard(deck.removeCard());
+			Main.handTwo.addCard(deck.removeCard());
+		} else {
+			Main.handOne.addCard(deck.removeCard());
+			Main.handOne.addCard(deck.removeCard());
 		}
     }
 }
