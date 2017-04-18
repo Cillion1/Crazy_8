@@ -30,7 +30,7 @@ public class Deck {
     	}
     }
     
-    
+    // text
     public void addCard(Card c) {
     	if (deck.size() < 52) {
     		deck.add(c);
