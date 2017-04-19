@@ -30,18 +30,24 @@ public class Deck {
     	}
     }
     
-    // text
+    /**
+     * Adds a card to the deck
+     * @param c a card
+     */
     public void addCard(Card c) {
     	if (deck.size() < 52) {
     		deck.add(c);
     	}
     }
     
-    public void returnDeck() {
-    	if (deck.size() <= 4) {
-    		for (int i = 0; i < pile.getPileCount(); i++) {
-				addCard(pile.removeCard(i));
-			}
+    /**
+     * Add cards from the pile to the deck if the deck is low on cards.
+     */
+    public void addToDeck() {
+    	if (deck.size() < 20 && pile.getPileCount()-1 >= 9) {
+    		do {
+				addCard(pile.removeCard(0));
+    		} while (pile.getPileCount()-1 >= 32);
     	}
     }
     

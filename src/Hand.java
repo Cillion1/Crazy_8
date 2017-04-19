@@ -8,7 +8,7 @@ public class Hand {
 	Pile pile;
 
 	/**
-	 * Constructor: A hand is an arraylist of cards.
+	 * Constructor: A hand is an array list of cards.
 	 * @param deck the deck being used
 	 * @param pile the pile being used
 	 */
@@ -28,7 +28,7 @@ public class Hand {
     /**
      * Removes a card from a position in their hand
      * @param position location of where the card is
-     * @return card of position
+     * @return the card in position
      */
     public Card removeCard(int position) {
     	return hand.remove(position);
@@ -45,7 +45,7 @@ public class Hand {
     /**
      * Gets a card from that position
      * @param position location of where card is
-     * @return card in said position
+     * @return the card in position
      */
     public Card getCard(int position) {
     	return hand.get(position);
@@ -57,7 +57,22 @@ public class Hand {
      * are sorted by value.
      */
     public void sortBySuit() {
-    	
+    	ArrayList<Card> newHand = new ArrayList<Card>();
+        while (hand.size() > 0) {
+           int position = 0;  // Position of minimal card.
+           Card firstCard = hand.get(0);  // Minimal card.
+           for (int i = 1; i < hand.size(); i++) {
+              Card secondCard = hand.get(i);
+              if (firstCard.suitToInt() > secondCard.suitToInt() 
+            		  || ((firstCard.suitToInt() == secondCard.suitToInt() && firstCard.valueToInt() > secondCard.valueToInt()))) {
+            	  position = i;
+            	  firstCard = secondCard;
+              }
+           }
+           hand.remove(position);
+           newHand.add(firstCard);
+        }
+        hand = newHand;
     }
 
     /**
@@ -67,57 +82,81 @@ public class Hand {
      * to have the lowest value.
      */
     public void sortByValue() {
-    	
+    	ArrayList<Card> newHand = new ArrayList<Card>();
+        while (hand.size() > 0) {
+           int position = 0;  // Position of minimal card.
+           Card firstCard = hand.get(0);  // Minimal card.
+           for (int i = 1; i < hand.size(); i++) {
+              Card secondCard = hand.get(i);
+              if (firstCard.valueToInt() > secondCard.valueToInt() 
+            		  || ((firstCard.valueToInt() == secondCard.valueToInt() && firstCard.suitToInt() > secondCard.suitToInt()))) {
+            	  position = i;
+            	  firstCard = secondCard;
+              }
+           }
+           hand.remove(position);
+           newHand.add(firstCard);
+        }
+        hand = newHand;
     }
     
     /**
      * Plays a card from a hand
-     * @param position position of where card is
      */
     public void playCard() {
     	do {
 	    	// Checks to see if input is 0 or higher
     		String chooseCard = keyb.next();
-    		try {
-				int position = Integer.parseInt(chooseCard) - 1;
-		    	if (position == -1) {
-		    		if (deck.getDeckSize() >= 0) {
-			    		System.out.println("Picked up a card.");
-			    		addCard(deck.removeCard());
-			    		deck.returnDeck();
-			    		break;
-		    		} else {
-		    			System.out.println("The deck is empty.");
-		    		}
-		    	} else if (position + 1 <= getHandSize()) {
-		    		// Checks what type of card it is
-					if (getCard(position).value.equals("8")) {
-						pile.addCard(removeCard(position));
-						play8();
-						deck.returnDeck();
-						break;
-					} else if (Main.currentSuit.equals(getCard(position).suit) || pile.lastCard().value.equals(getCard(position).value)) {
-						if (getCard(position).value.equals("2")) {
-							play2();
+    		if (chooseCard.equalsIgnoreCase("S")) {
+    			sort();
+    		} else {
+	    		try {
+					int position = Integer.parseInt(chooseCard) - 1;
+			    	if (position == -1) {
+			    		if (deck.getDeckSize() >= 0) {
+				    		System.out.println("Picked up a card.");
+				    		addCard(deck.removeCard());
+				    		deck.addToDeck();
+				    		break;
+			    		} else {
+			    			System.out.println("The deck is empty.");
+			    		}
+			    		sortBySuit();
+			    	} else if (position + 1 <= getHandSize()) {
+			    		// Checks what type of card it is
+						if (getCard(position).value.equals("8")) {
+							pile.addCard(removeCard(position));
+							play8();
+							deck.addToDeck();
+							break;
+						} else if (Main.currentSuit.equals(getCard(position).suit) || pile.getCard(pile.getPileCount()-1).value.equals(getCard(position).value)) {
+							if (getCard(position).value.equals("J")) {
+								discardCard(position);
+								playJ(position);
+							} else if (getCard(position).value.equals("2")) {
+								play2();
+								discardCard(position);
+								break;
+							} else {
+								discardCard(position);
+								break;
+							}
+						} else {
+							System.out.println("Invalid Command. Invalid Card");
 						}
-						pile.addCard(removeCard(position));
-						Main.currentSuit = pile.lastCard().suit;
-						deck.returnDeck();
-						break;
 					} else {
-						System.out.println("Invalid Command. Invalid Card");
+						System.out.println("Invalid Command. Hand Overflow");
 					}
-				} else {
-					System.out.println("Invalid Command. Hand Overflow");
-				}
-    		} catch (Exception e) {
-    			System.out.println("Invalid Command!");
+	    		} catch (Exception e) {
+	    			System.out.println("Invalid Command!");
+	    			System.out.println(e);
+	    		}
     		}
     	} while (true);
 	}
     
     /**
-     * Changes the suit to another.
+     * Changes the suit to another when an 8 is played.
      */
     public void play8() {
 		System.out.println("Choose any suit ([S]pades, [H]eart, [C]lub, [D]iamonds).");
@@ -145,14 +184,71 @@ public class Hand {
 		} while (true);
 	}
     
+    /**
+     * Makes the other player pick up 2 - 8 cards depending on the amount of 2's played in a row.
+     */
     public void play2() {
+    	int stack = 2;
+    	try {
+	    	if (pile.getCard(pile.getPileCount()-1).value.equals("2")) {
+	    		stack = stack + 2;
+	    		if (pile.getCard(pile.getPileCount()-2).value.equals("2")) {
+	    			stack = stack + 2;
+	    			if (pile.getCard(pile.getPileCount()-3).value.equals("2")) {
+	    				stack = stack + 2;
+	        		}
+	    		}
+	    	} 
+    	} catch (Exception e) {
+    		
+    	}
 		if (this.equals(Main.handOne)) {
-			Main.handTwo.addCard(deck.removeCard());
-			Main.handTwo.addCard(deck.removeCard());
+			for (int i = 0; i < stack; i++) {
+				Main.handTwo.addCard(deck.removeCard());
+			}
+			System.out.println("Player 2 has picked up " + stack + " cards.");
 		} else {
-			Main.handOne.addCard(deck.removeCard());
-			Main.handOne.addCard(deck.removeCard());
+			for (int i = 0; i < stack; i++) {
+				Main.handOne.addCard(deck.removeCard());
+			}
+			System.out.println("Player 1 has picked up " + stack + " cards.");
 		}
     }
+    
+    public void discardCard(int position) {
+		pile.addCard(removeCard(position));
+		Main.currentSuit = pile.getCard(pile.getPileCount()-1).suit;
+		deck.addToDeck();
+    }
+    
+    public void playJ(int position) {
+    	System.out.println("Skipped the opponents turn.");
+    	Main.printGame();
+    	System.out.println(hand);
+    	System.out.println("");
+    	if (this.equals(Main.handOne)) {
+    		System.out.println("Player 1's turn");
+    	} else {
+    		System.out.println("Player 2's turn");
+    	}
+    }
+    
+    public void sort() {
+    	System.out.println("Sort by [S]uit");
+		System.out.println("Sort by [V]alue");
+		do {
+			String chooseSort = keyb.next();
+			if (chooseSort.equalsIgnoreCase("S")) {
+				sortBySuit();
+				System.out.println(hand);
+				break;
+			} else if (chooseSort.equalsIgnoreCase("V")) {
+				sortByValue();
+				System.out.println(hand);
+				break;
+			} else {
+				System.out.println("Invalid Commad!");
+			}
+    	} while (true);
+    }
 }
-

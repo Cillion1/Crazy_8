@@ -12,6 +12,43 @@ public class Card {
 	}
 	
 	/**
+	 * Assigns a suit to a value
+	 * @return the number that suit corresponds
+	 */
+	public int suitToInt() {
+		switch (suit) {
+			case "♦" : return 1;
+			case "♣" : return 2;
+			case "♥" : return 3;
+			case "♠" : return 4;
+			default : return 0;
+		}
+	}
+	
+	/**
+	 * Assigns a value to a number
+	 * @return the number that value corresponds
+	 */
+	public int valueToInt() {
+		switch (value) {
+	        case "A" : return 1;
+	        case "2" : return 2;
+	        case "3" : return 3;
+	        case "4" : return 4;
+	        case "5" : return 5;
+	        case "6" : return 6;
+	        case "7" : return 7; 
+	        case "8" : return 8; 
+	        case "9" : return 9; 
+	        case "10" : return 10; 
+	        case "J" : return 11; 
+	        case "Q" : return 12; 
+	        case "K" : return 13; 
+	        default : return 0;
+		}
+	}
+	
+	/**
 	 * Returns the value and suit as a card.
 	 */
 	public String toString() {

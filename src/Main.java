@@ -4,22 +4,32 @@ public class Main {
 	static Scanner keyb = new Scanner(System.in);
 	static Pile pile = new Pile();
 	static Deck deck = new Deck(pile);
-	static Hand handTwo = new Hand(deck, pile);
 	static Hand handOne = new Hand(deck, pile);
+	static Hand handTwo = new Hand(deck, pile);
 	static Card discard = null;
 	static String currentSuit;
+	static boolean whosTurn = true;
 	
 	public static void main(String[] args) {
 		pile.addCard(deck.removeCard());
-		currentSuit = pile.lastCard().suit;
+		currentSuit = pile.getCard(pile.getPileCount()-1).suit;
 		createHand();
 		
 		do {
 			printGame();
 			playGame(true);
+			if (handOne.getHandSize() == 0) {
+				System.out.println("Player 1 wins!");
+				break;
+			}
 			printGame();
 			playGame(false);
+			if (handTwo.getHandSize() == 0) {
+				System.out.println("Player 2 wins!");
+				break;
+			}
 		} while (true);
+		
 	}
 	
 	public static void printIntro() {
@@ -65,7 +75,7 @@ public class Main {
 		System.out.println(" _____");
 		System.out.println("|:::::|");
 		System.out.println("|:::::|");
-		System.out.println("|:::::|		  " + pile.lastCard());
+		System.out.println("|:::::|		  " + pile.getCard(pile.getPileCount()-1));
 		System.out.println("|:::::|");
 		System.out.println("|:::::|");
 		System.out.println(" -----");
@@ -78,11 +88,13 @@ public class Main {
 			System.out.println("");
 			System.out.println("Player 1’s Turn!");
 			handOne.playCard();
+			whosTurn = false;
 		} else if (!turn) {
 			System.out.println(handTwo.hand);
 			System.out.println("");
 			System.out.println("Player 2’s Turn!");
 			handTwo.playCard();
+			whosTurn = true;
 		}
 	}
 	
