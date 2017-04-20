@@ -6,6 +6,8 @@ public class Hand {
 	ArrayList<Card> hand = new ArrayList<Card>();
 	Deck deck;
 	Pile pile;
+	String input;
+	ArrayList<Card> multi = new ArrayList<Card>();
 
 	/**
 	 * Constructor: A hand is an array list of cards.
@@ -110,7 +112,7 @@ public class Hand {
     		if (chooseCard.equalsIgnoreCase("S")) {
     			sort();
     		} else {
-	    		try {
+	    		//try {
 					int position = Integer.parseInt(chooseCard) - 1;
 			    	if (position == -1) {
 			    		if (deck.getDeckSize() >= 0) {
@@ -123,6 +125,8 @@ public class Hand {
 			    		}
 			    		sortBySuit();
 			    	} else if (position + 1 <= getHandSize()) {
+
+			    		
 			    		// Checks what type of card it is
 						if (getCard(position).value.equals("8")) {
 							pile.addCard(removeCard(position));
@@ -138,22 +142,66 @@ public class Hand {
 								discardCard(position);
 								break;
 							} else {
+								multi = checkMulti(position);
 								discardCard(position);
+								playMultiples(position);
 								break;
 							}
+
 						} else {
 							System.out.println("Invalid Command. Invalid Card");
 						}
 					} else {
 						System.out.println("Invalid Command. Hand Overflow");
 					}
-	    		} catch (Exception e) {
-	    			System.out.println("Invalid Command!");
-	    			System.out.println(e);
-	    		}
+	    	//	} catch (Exception e) {
+	    		//	System.out.println("Invalid Command!");
+	    			//System.out.println(e);
+	    	//	}
     		}
     	} while (true);
 	}
+    
+    public ArrayList<Card> checkMulti(int n){
+    	ArrayList<Card> multi = new ArrayList<Card>();
+    	for (int i = 0; i < hand.size(); i++) {
+			if (getCard(n).value.equals(getCard(i).value) && i != n){
+				multi.add(hand.remove(i));
+			}
+		}
+    	return multi;
+    }
+    
+    public void playMultiples(int position){
+    	System.out.println("Choosing a card");
+    	System.out.println(multi);
+    	int num;
+		do {
+			if (!multi.isEmpty()){
+				System.out.println("You have mutliple cards: "+ multi +"would you like to play any?\n(Y)es or (N)o");
+				input = keyb.nextLine();
+				if (input.equalsIgnoreCase("Y")) {
+					System.out.println("which card would you like?\n"+multi);
+					num = keyb.nextInt()-1;
+					System.out.println(multi.get(num));
+					pile.addCard(multi.get(num));
+				} else if (input.equalsIgnoreCase("N")) {
+					System.out.println("Not playing another card");
+					break;
+				} else {
+					System.out.println("ERROR");
+				}
+			} else {
+				break;
+			}
+		} while(input == "N" || !multi.isEmpty());
+		if (!multi.isEmpty()) {
+			for (int i = 0; i < multi.size(); i++) {
+				hand.add(multi.get(i));
+			}
+		}
+    }
+    
     
     /**
      * Changes the suit to another when an 8 is played.
