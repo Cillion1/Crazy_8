@@ -44,13 +44,17 @@ public class Deck {
      * Add cards from the pile to the deck if the deck is low on cards.
      */
     public void addToDeck() {
-    	if (deck.size() < 20 && pile.getPileCount()-1 >= 9) {
+    	if (deck.size() < 26 && pile.getPileCount()-1 >= 9) {
     		do {
 				addCard(pile.removeCard(0));
     		} while (pile.getPileCount()-1 >= 32);
     	}
     }
     
+    /**
+     * Returns the size of the deck
+     * @return how many cards in the deck
+     */
     public int getDeckSize() {
     	return deck.size()-1;
     }

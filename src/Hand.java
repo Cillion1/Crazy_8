@@ -103,17 +103,19 @@ public class Hand {
     }
     
     /**
-     * Plays a card from a hand
+     * Plays a card from the players hand. Check input of string or number and parse it into an integer.
+     * Checks the matching suit from the card played to the last card in the pile and throw the card in
+     * the pile if they match.
      */
     public void playCard() {
     	do {
 	    	// Checks to see if input is 0 or higher
-    		String chooseCard = keyb.next();
-    		if (chooseCard.equalsIgnoreCase("S")) {
+    		input = keyb.next();
+    		if (input.equalsIgnoreCase("S")) {
     			sort();
     		} else {
-	    		//try {
-					int position = Integer.parseInt(chooseCard) - 1;
+    			try {
+					int position = Integer.parseInt(input) - 1;
 			    	if (position == -1) {
 			    		if (deck.getDeckSize() >= 0) {
 				    		System.out.println("Picked up a card.");
@@ -123,28 +125,32 @@ public class Hand {
 			    		} else {
 			    			System.out.println("The deck is empty.");
 			    		}
-			    		sortBySuit();
 			    	} else if (position + 1 <= getHandSize()) {
-
-			    		
+			    		multi = checkForMultipleCards(position);
 			    		// Checks what type of card it is
 						if (getCard(position).value.equals("8")) {
+							multi = checkForMultipleCards(position);
 							pile.addCard(removeCard(position));
+							playMultiplesCards();
 							play8();
 							deck.addToDeck();
 							break;
 						} else if (Main.currentSuit.equals(getCard(position).suit) || pile.getCard(pile.getPileCount()-1).value.equals(getCard(position).value)) {
 							if (getCard(position).value.equals("J")) {
 								discardCard(position);
+								playMultiplesCards();
 								playJ(position);
+								if (hand.isEmpty()) {
+									break;
+								}
 							} else if (getCard(position).value.equals("2")) {
-								play2();
 								discardCard(position);
+								playMultiplesCards();
+								play2();
 								break;
 							} else {
-								multi = checkMulti(position);
 								discardCard(position);
-								playMultiples(position);
+								playMultiplesCards();
 								break;
 							}
 
@@ -154,51 +160,71 @@ public class Hand {
 					} else {
 						System.out.println("Invalid Command. Hand Overflow");
 					}
-	    	//	} catch (Exception e) {
-	    		//	System.out.println("Invalid Command!");
-	    			//System.out.println(e);
-	    	//	}
+		    	} catch (Exception e) {
+		    		System.out.println("Invalid Command!");
+		    		System.out.println(e);
+		    	}
     		}
     	} while (true);
 	}
     
-    public ArrayList<Card> checkMulti(int n){
-    	ArrayList<Card> multi = new ArrayList<Card>();
+    /**
+     * Creates another hand with only duplicates card values of the card played
+     * @param n location of where card is in the players hand
+     * @return a hand with only duplicate values
+     */
+    public ArrayList<Card> checkForMultipleCards(int n) {
+    	ArrayList<Card> multiHand = new ArrayList<Card>();
     	for (int i = 0; i < hand.size(); i++) {
-			if (getCard(n).value.equals(getCard(i).value) && i != n){
-				multi.add(hand.remove(i));
+			if (getCard(n).value.equals(getCard(i).value) && i != n) {
+				multiHand.add(hand.get(i));
 			}
 		}
-    	return multi;
+    	return multiHand;
     }
     
-    public void playMultiples(int position){
-    	System.out.println("Choosing a card");
-    	System.out.println(multi);
-    	int num;
+    /**
+     * Checks to see if the multi hand is not empty and allow the user to choose to play another card if values are
+     * the same. Removes the card from both the multi hand and the original hand if played. Any card in the multi hand then gets
+     * thrown back into the original hand
+     */
+    public void playMultiplesCards() {
 		do {
 			if (!multi.isEmpty()){
-				System.out.println("You have mutliple cards: "+ multi +"would you like to play any?\n(Y)es or (N)o");
-				input = keyb.nextLine();
+				System.out.println("You have mutliple cards! Would you like to play any?\n\n(Y)es or (N)o");
+				input = keyb.next();
 				if (input.equalsIgnoreCase("Y")) {
-					System.out.println("which card would you like?\n"+multi);
-					num = keyb.nextInt()-1;
-					System.out.println(multi.get(num));
-					pile.addCard(multi.get(num));
+					System.out.println("Which card would you like?\n\n"+multi);
+					do {
+						input = keyb.next();
+						try {
+							int num = Integer.parseInt(input) - 1;
+							for (int i = 0; i < hand.size(); i++) {
+								if (multi.get(num).value.equals(hand.get(i).value) && multi.get(num).suit.equals(hand.get(i).suit)) {
+									hand.remove(i);
+									break;
+								}
+							}
+							pile.addCard(multi.get(num));
+							Main.currentSuit = pile.getCard(pile.getPileCount()-1).suit;
+							multi.remove(num);
+							break;
+						} catch (Exception e) {
+							System.out.println("Invalid Command");
+						}
+					} while (true);
 				} else if (input.equalsIgnoreCase("N")) {
-					System.out.println("Not playing another card");
+					multi.clear();
 					break;
 				} else {
-					System.out.println("ERROR");
+					System.out.println("Invalid Command!");
 				}
 			} else {
 				break;
 			}
-		} while(input == "N" || !multi.isEmpty());
-		if (!multi.isEmpty()) {
-			for (int i = 0; i < multi.size(); i++) {
-				hand.add(multi.get(i));
-			}
+		} while (true);
+		for (int i = 0; i < multi.size(); i++) {
+			hand.add(multi.get(i));
 		}
     }
     
@@ -209,22 +235,22 @@ public class Hand {
     public void play8() {
 		System.out.println("Choose any suit ([S]pades, [H]eart, [C]lub, [D]iamonds).");
 		do {
-			String newSuit = keyb.next();
-			if (newSuit.equalsIgnoreCase("S")) {
+			input = keyb.next();
+			if (input.equalsIgnoreCase("S")) {
 				Main.currentSuit = "♠";
-				System.out.println("New suit is Spades.");
+				System.out.println("New suit is Spades.\n");
 				break;
-			} else if (newSuit.equalsIgnoreCase("H")) {
+			} else if (input.equalsIgnoreCase("H")) {
 				Main.currentSuit = "♥";
-				System.out.println("New suit is Hearts.");
+				System.out.println("New suit is Hearts.\n");
 				break;
-			} else if (newSuit.equalsIgnoreCase("C")) {
+			} else if (input.equalsIgnoreCase("C")) {
 				Main.currentSuit = "♣";
-				System.out.println("New suit is Clubs.");
+				System.out.println("New suit is Clubs.\n");
 				break;
-			} else if (newSuit.equalsIgnoreCase("D")) {
+			} else if (input.equalsIgnoreCase("D")) {
 				Main.currentSuit = "♦";
-				System.out.println("New suit is Diamonds.");
+				System.out.println("New suit is Diamonds.\n");
 				break;
 			} else {
 				System.out.println("Please type the correct letter to continue.");
@@ -236,44 +262,60 @@ public class Hand {
      * Makes the other player pick up 2 - 8 cards depending on the amount of 2's played in a row.
      */
     public void play2() {
+    	int count = 0;
     	int stack = 2;
     	try {
-	    	if (pile.getCard(pile.getPileCount()-1).value.equals("2")) {
+	    	if (pile.getCard(pile.getPileCount()-2).value.equals("2")) {
 	    		stack = stack + 2;
-	    		if (pile.getCard(pile.getPileCount()-2).value.equals("2")) {
+	    		if (pile.getCard(pile.getPileCount()-3).value.equals("2")) {
 	    			stack = stack + 2;
-	    			if (pile.getCard(pile.getPileCount()-3).value.equals("2")) {
+	    			if (pile.getCard(pile.getPileCount()-4).value.equals("2")) {
 	    				stack = stack + 2;
 	        		}
 	    		}
-	    	} 
+	    	}
     	} catch (Exception e) {
     		
     	}
 		if (this.equals(Main.handOne)) {
 			for (int i = 0; i < stack; i++) {
+				if (deck.getDeckSize() <= 0) {
+					break;
+				}
 				Main.handTwo.addCard(deck.removeCard());
+				count++;
 			}
-			System.out.println("Player 2 has picked up " + stack + " cards.");
+			System.out.println("Player 2 has picked up " + count + " cards.");
 		} else {
 			for (int i = 0; i < stack; i++) {
+				if (deck.getDeckSize() <= 0) {
+					break;
+				}
 				Main.handOne.addCard(deck.removeCard());
+				count++;
 			}
-			System.out.println("Player 1 has picked up " + stack + " cards.");
+			System.out.println("Player 1 has picked up " + count + " cards.");
 		}
     }
     
+    /**
+     * Discards the card from the hand and changes the suit from the discard card to the new one. Reshuffle pile back to deck if the deck is low on count.
+     * @param position location of card in hand
+     */
     public void discardCard(int position) {
 		pile.addCard(removeCard(position));
 		Main.currentSuit = pile.getCard(pile.getPileCount()-1).suit;
 		deck.addToDeck();
     }
     
+    /**
+     * Skips the other players turn and gives another play on a card.
+     * @param position location of card in hand
+     */
     public void playJ(int position) {
     	System.out.println("Skipped the opponents turn.");
-    	Main.printGame();
-    	System.out.println(hand);
-    	System.out.println("");
+    	Main.printInterface();
+    	System.out.println(hand + "\n");
     	if (this.equals(Main.handOne)) {
     		System.out.println("Player 1's turn");
     	} else {
@@ -281,16 +323,19 @@ public class Hand {
     	}
     }
     
+    /**
+     * Sorts the hand by value or suit.
+     */
     public void sort() {
     	System.out.println("Sort by [S]uit");
 		System.out.println("Sort by [V]alue");
 		do {
-			String chooseSort = keyb.next();
-			if (chooseSort.equalsIgnoreCase("S")) {
+			input = keyb.next();
+			if (input.equalsIgnoreCase("S")) {
 				sortBySuit();
 				System.out.println(hand);
 				break;
-			} else if (chooseSort.equalsIgnoreCase("V")) {
+			} else if (input.equalsIgnoreCase("V")) {
 				sortByValue();
 				System.out.println(hand);
 				break;
