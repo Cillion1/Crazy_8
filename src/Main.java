@@ -11,25 +11,30 @@ public class Main {
 	static String input;
 	
 	public static void main(String[] args) {
-		pile.addCard(deck.removeCard());
-		currentSuit = pile.getCard(pile.getPileCount()-1).suit;
-		createHand();
-		
 		do {
-			printInterface();
-			playGame(true);
-			if (handOne.getHandSize() == 0) {
-				System.out.println("Player 1 wins!");
-				break;
+			for (int i = 0; i < pile.getPileCount(); i++) {
+				deck.addCard(pile.removeCard(i));
 			}
-			printInterface();
-			playGame(false);
-			if (handTwo.getHandSize() == 0) {
-				System.out.println("Player 2 wins!");
-				break;
-			}
-		} while (true);
-		
+			pile.addCard(deck.removeCard());
+			currentSuit = pile.getCard(pile.getPileCount()-1).suit;
+			createHand();
+			do {
+				printInterface();
+				playGame(true);
+				if (handOne.getHandSize() == 0) {
+					System.out.println("Player 1 wins!");
+					break;
+					
+				}
+				printInterface();
+				playGame(false);
+				if (handTwo.getHandSize() == 0) {
+					System.out.println("Player 2 wins!");
+					break;
+				}
+			} while (true);
+		} while (!endGame());
+		System.out.println("Quiting game.");
 	}
 	
 	/**
@@ -98,9 +103,19 @@ public class Main {
 		}
 	}
 	
-	public static void endGame() {
+	public static boolean endGame() {
 		System.out.println("(P)lay Again\n "
 				+ "(Q)uit");
+		do {
+			input = keyb.next();
+			if (input.equalsIgnoreCase("P")) {
+				return false;
+			} else if (input.equalsIgnoreCase("Q")) {
+				return true;
+			} else {
+				System.out.println("Invalid Command!");
+			}
+		} while (true);
 	}
 	
 }
