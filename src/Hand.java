@@ -1,23 +1,25 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Description: Defines a hand as an arraylist of cards. The user can play from
+ * the hand
+ * 
+ * @author Dennis Situ 
+ * Last Updated: April 24, 2017
+ */
+
 public class Hand {
 	Scanner keyb = new Scanner(System.in);
 	ArrayList<Card> hand = new ArrayList<Card>();
-	Game game;
-	Deck deck;
-	Pile pile;
-	String input;
-	Print print;
 	ArrayList<Card> multi = new ArrayList<Card>();
+	Game game;
 
 	/**
-	 * Constructor: A hand is an array list of cards.
+	 * Connects the Hand class to the Game class
 	 * 
-	 * @param deck
-	 *            the deck being used
-	 * @param pile
-	 *            the pile being used
+	 * @param game
+	 *            the game
 	 */
 	public Hand(Game game) {
 		this.game = game;
@@ -121,62 +123,62 @@ public class Hand {
 	public void playCard() {
 		do {
 			// Checks to see if input is 0 or higher
-			input = keyb.next();
-			if (input.equalsIgnoreCase("S")) {
+			game.input = keyb.next();
+			if (game.input.equalsIgnoreCase("S")) {
 				sort();
 			} else {
-				//try {
-					int position = Integer.parseInt(input) - 1;
-					if (position == -1) {
-						if (game.deck.getDeckSize() - 1 >= 0) {
-							pickUpCard();
-							break;
-						} else {
-							System.out.println("The deck is empty.");
+				// try {
+				int position = Integer.parseInt(game.input) - 1;
+				if (position == -1) {
+					if (game.deck.getDeckSize() - 1 >= 0) {
+						pickUpCard();
+						break;
+					} else {
+						System.out.println("The deck is empty.");
+					}
+				} else if (position + 1 <= getHandSize()) {
+					multi = checkForMultipleCards(position);
+					// Checks what type of card it is
+					if (getCard(position).value.equals("8")) {
+						game.pile.addCard(removeCard(position));
+						if (!hand.isEmpty()) {
+							playMultiplesCards();
+							play8();
+							game.deck.addToDeck();
 						}
-					} else if (position + 1 <= getHandSize()) {
-						multi = checkForMultipleCards(position);
-						// Checks what type of card it is
-						if (getCard(position).value.equals("8")) {
-							game.pile.addCard(removeCard(position));
+						break;
+					} else if (game.currentSuit.equals(getCard(position).suit)
+							|| game.pile.getCard(game.pile.getPileSize() - 1).value.equals(getCard(position).value)) {
+						if (getCard(position).value.equals("J")) {
+							discardCard(position);
+							playMultiplesCards();
+							playJ(position);
+							if (hand.size() == 0) {
+								break;
+							}
+						} else if (getCard(position).value.equals("2")) {
+							discardCard(position);
 							if (!hand.isEmpty()) {
 								playMultiplesCards();
-								play8();
-								game.deck.addToDeck();
+								play2();
 							}
 							break;
-						} else if (Game.currentSuit.equals(getCard(position).suit)
-								|| game.pile.getCard(game.pile.getPileSize() - 1).value.equals(getCard(position).value)) {
-							if (getCard(position).value.equals("J")) {
-								discardCard(position);
-								playMultiplesCards();
-								playJ(position);
-								if (hand.size() == 0) {
-									break;
-								}
-							} else if (getCard(position).value.equals("2")) {
-								discardCard(position);
-								if (!hand.isEmpty()) {
-									playMultiplesCards();
-									play2();
-								}
-								break;
-							} else {
-								discardCard(position);
-								playMultiplesCards();
-								break;
-							}
-
 						} else {
-							System.out.println("Invalid Command. Invalid Card");
+							discardCard(position);
+							playMultiplesCards();
+							break;
 						}
+
 					} else {
-						System.out.println("Invalid Command. Hand Overflow");
+						System.out.println("Invalid Command. Invalid Card");
 					}
-			//} catch (Exception e) {
-				//	System.out.println("Invalid Command!");
-					//System.out.println(e);
-			//	}
+				} else {
+					System.out.println("Invalid Command. Hand Overflow");
+				}
+				// } catch (Exception e) {
+				// System.out.println("Invalid Command!");
+				// System.out.println(e);
+				// }
 			}
 		} while (true);
 	}
@@ -220,14 +222,14 @@ public class Hand {
 	public void playMultiplesCards() {
 		do {
 			if (!multi.isEmpty()) {
-				System.out.println("You have mutliple cards! Would you like to play any?\n\n(Y)es or (N)o");
-				input = keyb.next();
-				if (input.equalsIgnoreCase("Y")) {
+				System.out.println("You have multiple cards! Would you like to play any?\n\n(Y)es or (N)o");
+				game.input = keyb.next();
+				if (game.input.equalsIgnoreCase("Y")) {
 					System.out.println("Which card would you like?\n\n" + multi);
 					do {
-						input = keyb.next();
+						game.input = keyb.next();
 						try {
-							int num = Integer.parseInt(input) - 1;
+							int num = Integer.parseInt(game.input) - 1;
 							for (int i = 0; i < hand.size(); i++) {
 								if (multi.get(num).value.equals(hand.get(i).value)
 										&& multi.get(num).suit.equals(hand.get(i).suit)) {
@@ -236,14 +238,14 @@ public class Hand {
 								}
 							}
 							game.pile.addCard(multi.get(num));
-							Game.currentSuit = game.pile.getCard(game.pile.getPileSize() - 1).suit;
+							game.currentSuit = game.pile.getCard(game.pile.getPileSize() - 1).suit;
 							multi.remove(num);
 							break;
 						} catch (Exception e) {
 							System.out.println("Invalid Command");
 						}
 					} while (true);
-				} else if (input.equalsIgnoreCase("N")) {
+				} else if (game.input.equalsIgnoreCase("N")) {
 					multi.clear();
 					break;
 				} else {
@@ -264,21 +266,21 @@ public class Hand {
 	public void play8() {
 		System.out.println("Choose any suit ([S]pades, [H]eart, [C]lub, [D]iamonds).");
 		do {
-			input = keyb.next();
-			if (input.equalsIgnoreCase("S")) {
-				Game.currentSuit = "♠";
+			game.input = keyb.next();
+			if (game.input.equalsIgnoreCase("S")) {
+				game.currentSuit = "♠";
 				System.out.println("New suit is Spades.\n");
 				break;
-			} else if (input.equalsIgnoreCase("H")) {
-				Game.currentSuit = "♥";
+			} else if (game.input.equalsIgnoreCase("H")) {
+				game.currentSuit = "♥";
 				System.out.println("New suit is Hearts.\n");
 				break;
-			} else if (input.equalsIgnoreCase("C")) {
-				Game.currentSuit = "♣";
+			} else if (game.input.equalsIgnoreCase("C")) {
+				game.currentSuit = "♣";
 				System.out.println("New suit is Clubs.\n");
 				break;
-			} else if (input.equalsIgnoreCase("D")) {
-				Game.currentSuit = "♦";
+			} else if (game.input.equalsIgnoreCase("D")) {
+				game.currentSuit = "♦";
 				System.out.println("New suit is Diamonds.\n");
 				break;
 			} else {
@@ -294,14 +296,18 @@ public class Hand {
 	public void play2() {
 		int count = 0;
 		int stack = 2;
-		if (game.pile.getCard(game.pile.getPileSize() - 2).value.equals("2")) {
-			stack = stack + 2;
-			if (game.pile.getCard(game.pile.getPileSize() - 3).value.equals("2")) {
+		try {
+			if (game.pile.getCard(game.pile.getPileSize() - 2).value.equals("2")) {
 				stack = stack + 2;
-				if (game.pile.getCard(game.pile.getPileSize() - 4).value.equals("2")) {
+				if (game.pile.getCard(game.pile.getPileSize() - 3).value.equals("2")) {
 					stack = stack + 2;
+					if (game.pile.getCard(game.pile.getPileSize() - 4).value.equals("2")) {
+						stack = stack + 2;
+					}
 				}
 			}
+		} catch (Exception e) {
+			System.out.println("");
 		}
 		if (this.equals(game.handOne)) {
 			for (int i = 0; i < stack; i++) {
@@ -334,7 +340,7 @@ public class Hand {
 	 */
 	public void discardCard(int position) {
 		game.pile.addCard(removeCard(position));
-		Game.currentSuit = game.pile.getCard(game.pile.getPileSize() - 1).suit;
+		game.currentSuit = game.pile.getCard(game.pile.getPileSize() - 1).suit;
 		game.deck.addToDeck();
 	}
 
@@ -347,7 +353,7 @@ public class Hand {
 	public void playJ(int position) {
 		if (!hand.isEmpty()) {
 			System.out.println("Skipped the opponents turn.\n");
-			print.gameInterface();
+			game.print.gameInterface();
 			System.out.println(hand + "\n");
 			if (this.equals(game.handOne)) {
 				System.out.println("Player 1's turn");
@@ -364,12 +370,12 @@ public class Hand {
 		System.out.println("Sort by [S]uit");
 		System.out.println("Sort by [V]alue");
 		do {
-			input = keyb.next();
-			if (input.equalsIgnoreCase("S")) {
+			game.input = keyb.next();
+			if (game.input.equalsIgnoreCase("S")) {
 				sortBySuit();
 				System.out.println(hand);
 				break;
-			} else if (input.equalsIgnoreCase("V")) {
+			} else if (game.input.equalsIgnoreCase("V")) {
 				sortByValue();
 				System.out.println(hand);
 				break;

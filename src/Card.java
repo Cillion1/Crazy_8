@@ -1,8 +1,16 @@
+/**
+ * Description: Defines what a card is and converts the corresponding values or
+ * suit into integers
+ * 
+ * @author Dennis Situ 
+ * Last Updated: April 24, 2017
+ */
+
 public class Card {
 	String suit, value;
 
 	/**
-	 * Constructor: A card has a suit and a value
+	 * Defines a card with a suit and a value.
 	 * 
 	 * @param suit
 	 *            the suit of the card

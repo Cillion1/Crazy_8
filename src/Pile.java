@@ -1,5 +1,13 @@
 import java.util.ArrayList;
 
+/**
+ * Description: Defines a pile as a stack of cards. Cards played from the hand
+ * are thrown here.
+ * 
+ * @author Dennis Situ 
+ * Last Updated: April 24, 2017
+ */
+
 public class Pile {
 	ArrayList<Card> pile = new ArrayList<Card>();
 

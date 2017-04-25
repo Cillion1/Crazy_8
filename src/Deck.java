@@ -1,11 +1,24 @@
 import java.util.ArrayList;
 
+/**
+ * Description: Defines a deck as a stack of cards.
+ * 
+ * @author Dennis Situ 
+ * Last Updated: April 24, 2017
+ */
+
 public class Deck {
 	ArrayList<Card> deck = new ArrayList<Card>();
 	String[] suits = { "♠", "♥", "♦", "♣" };
 	String[] value = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
 	Pile pile;
 
+	/**
+	 * Creates an unshuffled deck of cards.
+	 * 
+	 * @param pile
+	 *            the pile in the Pile class
+	 */
 	Deck(Pile pile) {
 		for (int i = 0; i < suits.length; i++) {
 			for (int j = 0; j < value.length; j++) {

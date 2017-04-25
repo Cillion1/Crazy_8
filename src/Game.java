@@ -1,28 +1,27 @@
 import java.util.Scanner;
 
+/**
+ * Description: Constructs the game
+ * 
+ * @author Dennis Situ 
+ * Last Updated: April 24, 2017
+ */
+
 public class Game {
 	Scanner keyb = new Scanner(System.in);
 	Pile pile = new Pile();
 	Deck deck = new Deck(pile);
-	Print print = new Print(pile);
+	Print print = new Print(this);
 	Hand handOne = new Hand(this);
 	Hand handTwo = new Hand(this);
 	String input;
-	static String currentSuit;
-
-//	Game(Pile pile, Deck deck, Print print, Hand handOne, Hand handTwo) {
-//		this.pile = pile;
-//		this.deck = deck;
-//		this.print = print;
-//		this.handOne = handOne;
-//		this.handTwo = handTwo;
-//	}
+	String currentSuit;
 
 	/**
 	 * Plays the game
 	 */
 	public void play() {
-		print.intro();
+		//print.intro();
 		do {
 			pile.addCard(deck.removeCard());
 			currentSuit = pile.getCard(pile.getPileSize() - 1).suit;
@@ -31,13 +30,13 @@ public class Game {
 				print.gameInterface();
 				playerTurn(true);
 				if (handOne.getHandSize() == 0) {
-					System.out.println("Player 1 wins!");
+					System.out.println("Player 1 wins!\n");
 					break;
 				}
 				print.gameInterface();
 				playerTurn(false);
 				if (handTwo.getHandSize() == 0) {
-					System.out.println("Player 2 wins!");
+					System.out.println("Player 2 wins!\n");
 					break;
 				}
 			} while (true);
@@ -79,14 +78,10 @@ public class Game {
 	 */
 	public void playerTurn(boolean turn) {
 		if (turn) {
-			System.out.println(handOne.hand + "\n");
-			System.out.println("Player 1’s Turn!\n");
-			System.out.println("Player 2 has " + handTwo.getHandSize() + " cards left to play!");
+			print.hand(turn);
 			handOne.playCard();
 		} else if (!turn) {
-			System.out.println(handTwo.hand + "\n");
-			System.out.println("Player 2’s Turn!\n");
-			System.out.println("Player 1 has " + handOne.getHandSize() + " cards left to play!");
+			print.hand(turn);
 			handTwo.playCard();
 		}
 	}
