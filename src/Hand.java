@@ -5,8 +5,7 @@ import java.util.Scanner;
  * Description: Defines a hand as an arraylist of cards. The user can play from
  * the hand
  * 
- * @author Dennis Situ 
- * Last Updated: April 24, 2017
+ * @author Dennis Situ Last Updated: April 24, 2017
  */
 
 public class Hand {
@@ -77,8 +76,9 @@ public class Hand {
 			Card firstCard = hand.get(0); // Minimal card.
 			for (int i = 1; i < hand.size(); i++) {
 				Card secondCard = hand.get(i);
-				if (firstCard.suitToInt() > secondCard.suitToInt() || ((firstCard.suitToInt() == secondCard.suitToInt()
-						&& firstCard.valueToInt() > secondCard.valueToInt()))) {
+				if (firstCard.suitToInt() > secondCard.suitToInt()
+						|| ((firstCard.suitToInt() == secondCard.suitToInt() && firstCard
+								.valueToInt() > secondCard.valueToInt()))) {
 					position = i;
 					firstCard = secondCard;
 				}
@@ -102,8 +102,8 @@ public class Hand {
 			for (int i = 1; i < hand.size(); i++) {
 				Card secondCard = hand.get(i);
 				if (firstCard.valueToInt() > secondCard.valueToInt()
-						|| ((firstCard.valueToInt() == secondCard.valueToInt()
-								&& firstCard.suitToInt() > secondCard.suitToInt()))) {
+						|| ((firstCard.valueToInt() == secondCard.valueToInt() && firstCard
+								.suitToInt() > secondCard.suitToInt()))) {
 					position = i;
 					firstCard = secondCard;
 				}
@@ -126,8 +126,7 @@ public class Hand {
 			game.input = keyb.next();
 			if (game.input.equalsIgnoreCase("S")) {
 				sort();
-			} else {
-				// try {
+			} else if (Character.isDigit(game.input.charAt(0))){
 				int position = Integer.parseInt(game.input) - 1;
 				if (position == -1) {
 					if (game.deck.getDeckSize() - 1 >= 0) {
@@ -148,7 +147,8 @@ public class Hand {
 						}
 						break;
 					} else if (game.currentSuit.equals(getCard(position).suit)
-							|| game.pile.getCard(game.pile.getPileSize() - 1).value.equals(getCard(position).value)) {
+							|| game.pile.getCard(game.pile.getPileSize() - 1).value
+									.equals(getCard(position).value)) {
 						if (getCard(position).value.equals("J")) {
 							discardCard(position);
 							playMultiplesCards();
@@ -175,10 +175,8 @@ public class Hand {
 				} else {
 					System.out.println("Invalid Command. Hand Overflow");
 				}
-				// } catch (Exception e) {
-				// System.out.println("Invalid Command!");
-				// System.out.println(e);
-				// }
+			} else {
+				System.out.println("Invalid Command!");
 			}
 		} while (true);
 	}
@@ -222,26 +220,46 @@ public class Hand {
 	public void playMultiplesCards() {
 		do {
 			if (!multi.isEmpty()) {
-				System.out.println("You have multiple cards! Would you like to play any?\n\n(Y)es or (N)o");
+				System.out
+						.println("You have multiple cards! Would you like to play any?\n\n(Y)es or (N)o");
 				game.input = keyb.next();
 				if (game.input.equalsIgnoreCase("Y")) {
-					System.out.println("Which card would you like?\n\n" + multi);
+					System.out.println("Which card would you like to play?");
+					for (int i = 1; i < multi.size() + 1; i++) {
+						if (multi.get(i - 1).value.equals("10")) {
+							System.out.print(" ");
+						}
+						if (i <= 10) {
+							System.out.print("   " + i + "   ");
+						} else if (i > 10) {
+							System.out.print("  " + i + "   ");
+						}
+					}
+					System.out.println("");
+					System.out.println(multi);
 					do {
 						game.input = keyb.next();
-						try {
+						if (Character.isDigit(game.input.charAt(0))) {
 							int num = Integer.parseInt(game.input) - 1;
-							for (int i = 0; i < hand.size(); i++) {
-								if (multi.get(num).value.equals(hand.get(i).value)
-										&& multi.get(num).suit.equals(hand.get(i).suit)) {
-									hand.remove(i);
-									break;
+							if (num + 1 <= multi.size()) {
+								for (int i = 0; i < hand.size(); i++) {
+									if (multi.get(num).value
+											.equals(hand.get(i).value)
+											&& multi.get(num).suit.equals(hand
+													.get(i).suit)) {
+										hand.remove(i);
+										break;
+									}
 								}
+								game.pile.addCard(multi.get(num));
+								game.currentSuit = game.pile.getCard(game.pile
+										.getPileSize() - 1).suit;
+								multi.remove(num);
+								break;
+							} else {
+								System.out.println("Invalid Command! Overflow.");
 							}
-							game.pile.addCard(multi.get(num));
-							game.currentSuit = game.pile.getCard(game.pile.getPileSize() - 1).suit;
-							multi.remove(num);
-							break;
-						} catch (Exception e) {
+						} else {
 							System.out.println("Invalid Command");
 						}
 					} while (true);
@@ -264,7 +282,8 @@ public class Hand {
 	 * Changes the suit to another when an 8 is played.
 	 */
 	public void play8() {
-		System.out.println("Choose any suit ([S]pades, [H]eart, [C]lub, [D]iamonds).");
+		System.out
+				.println("Choose any suit ([S]pades, [H]eart, [C]lub, [D]iamonds).");
 		do {
 			game.input = keyb.next();
 			if (game.input.equalsIgnoreCase("S")) {
@@ -284,7 +303,8 @@ public class Hand {
 				System.out.println("New suit is Diamonds.\n");
 				break;
 			} else {
-				System.out.println("Please type the correct letter to continue.");
+				System.out
+						.println("Please type the correct letter to continue.");
 			}
 		} while (true);
 	}
@@ -295,19 +315,13 @@ public class Hand {
 	 */
 	public void play2() {
 		int count = 0;
-		int stack = 2;
-		try {
-			if (game.pile.getCard(game.pile.getPileSize() - 2).value.equals("2")) {
+		int stack = 0;
+		for (int i = game.pile.getPileSize() - 1; i >= 0; i--) {
+			if (game.pile.getCard(i).value.equals("2")) {
 				stack = stack + 2;
-				if (game.pile.getCard(game.pile.getPileSize() - 3).value.equals("2")) {
-					stack = stack + 2;
-					if (game.pile.getCard(game.pile.getPileSize() - 4).value.equals("2")) {
-						stack = stack + 2;
-					}
-				}
+			} else {
+				break;
 			}
-		} catch (Exception e) {
-			System.out.println("");
 		}
 		if (this.equals(game.handOne)) {
 			for (int i = 0; i < stack; i++) {
@@ -373,10 +387,12 @@ public class Hand {
 			game.input = keyb.next();
 			if (game.input.equalsIgnoreCase("S")) {
 				sortBySuit();
+				game.print.numberList(this);
 				System.out.println(hand);
 				break;
 			} else if (game.input.equalsIgnoreCase("V")) {
 				sortByValue();
+				game.print.numberList(this);
 				System.out.println(hand);
 				break;
 			} else {

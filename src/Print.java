@@ -66,6 +66,26 @@ public class Print {
 	}
 
 	/**
+	 * Prints the numbers on top of the array list
+	 * 
+	 * @param hand
+	 *            players hand
+	 */
+	public void numberList(Hand hand) {
+		for (int i = 1; i < hand.getHandSize() + 1; i++) {
+			if (hand.getCard(i - 1).value.equals("10")) {
+				System.out.print(" ");
+			}
+			if (i <= 10) {
+				System.out.print("   " + i + "   ");
+			} else if (i > 10) {
+				System.out.print("  " + i + "   ");
+			}
+		}
+		System.out.println("");
+	}
+
+	/**
 	 * Prints the hand of the players along with some information on the other
 	 * players hand
 	 * 
@@ -74,33 +94,13 @@ public class Print {
 	 */
 	public void hand(boolean turn) {
 		if (turn) {
-			for (int i = 1; i < game.handOne.getHandSize() + 1; i++) {
-				if (game.handOne.getCard(i - 1).value.equals("10")) {
-					System.out.print(" ");
-				}
-				if (i <= 10) {
-					System.out.print("   " + i + "   ");
-				} else if (i > 10) {
-					System.out.print("  " + i + "   ");
-				}
-			}
-			System.out.println("");
+			numberList(game.handOne);
 			System.out.println(game.handOne.hand + "\n");
 			System.out.println("Player 1’s Turn!\n");
 			System.out.println("Player 2 has " + game.handTwo.getHandSize()
 					+ " cards left to play!");
 		} else if (!turn) {
-			for (int i = 1; i < game.handTwo.getHandSize() + 1; i++) {
-				if (game.handTwo.getCard(i - 1).value.equals("10")) {
-					System.out.print(" ");
-				}
-				if (i <= 10) {
-					System.out.print("   " + i + "   ");
-				} else if (i > 10) {
-					System.out.print("  " + i + "   ");
-				}
-			}
-			System.out.println("");
+			numberList(game.handTwo);
 			System.out.println(game.handTwo.hand + "\n");
 			System.out.println("Player 2’s Turn!\n");
 			System.out.println("Player 1 has " + game.handOne.getHandSize()
