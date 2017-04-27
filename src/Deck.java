@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 /**
- * Description: Defines a deck as a stack of cards.
+ * Defines a deck.
  * 
  * @author Dennis Situ 
  * Last Updated: April 24, 2017

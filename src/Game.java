@@ -3,8 +3,7 @@ import java.util.Scanner;
 /**
  * Description: Constructs the game
  * 
- * @author Dennis Situ 
- * Last Updated: April 24, 2017
+ * @author Dennis Situ Last Updated: April 24, 2017
  */
 
 public class Game {
@@ -21,7 +20,7 @@ public class Game {
 	 * Plays the game
 	 */
 	public void play() {
-		//print.intro();
+		print.intro();
 		do {
 			pile.addCard(deck.removeCard());
 			currentSuit = pile.getCard(pile.getPileSize() - 1).suit;
@@ -89,7 +88,7 @@ public class Game {
 	/**
 	 * Checks to see if the user wants to play again or not.
 	 * 
-	 * @return true or false depending on users choice
+	 * @return boolean true if the players want to play again.
 	 */
 	public boolean end() {
 		System.out.println("(P)lay Again\n" + "(Q)uit");

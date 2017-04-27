@@ -2,12 +2,10 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Description: Defines a hand as an arraylist of cards. The user can play from
- * the hand
+ * Allows the players to play a card from the hand.
  * 
  * @author Dennis Situ Last Updated: April 24, 2017
  */
-
 public class Hand {
 	Scanner keyb = new Scanner(System.in);
 	ArrayList<Card> hand = new ArrayList<Card>();
@@ -48,7 +46,7 @@ public class Hand {
 	/**
 	 * Gets the size of the hand
 	 * 
-	 * @return size of hand
+	 * @return int the size of hand
 	 */
 	public int getHandSize() {
 		return hand.size();
@@ -59,7 +57,7 @@ public class Hand {
 	 * 
 	 * @param position
 	 *            location of where card is
-	 * @return the card in position
+	 * @return Card the card in position
 	 */
 	public Card getCard(int position) {
 		return hand.get(position);
@@ -72,14 +70,16 @@ public class Hand {
 	public void sortBySuit() {
 		ArrayList<Card> newHand = new ArrayList<Card>();
 		while (hand.size() > 0) {
-			int position = 0; // Position of minimal card.
-			Card firstCard = hand.get(0); // Minimal card.
+			int position = 0; // Position of the first card.
+			Card firstCard = hand.get(0);
 			for (int i = 1; i < hand.size(); i++) {
-				Card secondCard = hand.get(i);
+				Card secondCard = hand.get(i); // Position of the second card.
+				// Checks to see if first card value is bigger than second cards
+				// value
 				if (firstCard.suitToInt() > secondCard.suitToInt()
 						|| ((firstCard.suitToInt() == secondCard.suitToInt() && firstCard
 								.valueToInt() > secondCard.valueToInt()))) {
-					position = i;
+					position = i; // Assign
 					firstCard = secondCard;
 				}
 			}
@@ -97,10 +97,12 @@ public class Hand {
 	public void sortByValue() {
 		ArrayList<Card> newHand = new ArrayList<Card>();
 		while (hand.size() > 0) {
-			int position = 0; // Position of minimal card.
-			Card firstCard = hand.get(0); // Minimal card.
+			int position = 0; // Position of the first card.
+			Card firstCard = hand.get(0);
 			for (int i = 1; i < hand.size(); i++) {
-				Card secondCard = hand.get(i);
+				Card secondCard = hand.get(i); // Position of the second card.
+				// Checks to see if first card suit is bigger than second cards
+				// suit
 				if (firstCard.valueToInt() > secondCard.valueToInt()
 						|| ((firstCard.valueToInt() == secondCard.valueToInt() && firstCard
 								.suitToInt() > secondCard.suitToInt()))) {
@@ -126,7 +128,7 @@ public class Hand {
 			game.input = keyb.next();
 			if (game.input.equalsIgnoreCase("S")) {
 				sort();
-			} else if (Character.isDigit(game.input.charAt(0))){
+			} else if (Character.isDigit(game.input.charAt(0))) {
 				int position = Integer.parseInt(game.input) - 1;
 				if (position == -1) {
 					if (game.deck.getDeckSize() - 1 >= 0) {
@@ -152,7 +154,7 @@ public class Hand {
 						if (getCard(position).value.equals("J")) {
 							discardCard(position);
 							playMultiplesCards();
-							playJ(position);
+							playJ();
 							if (hand.size() == 0) {
 								break;
 							}
@@ -186,7 +188,7 @@ public class Hand {
 	 * 
 	 * @param n
 	 *            location of where card is in the players hand
-	 * @return a hand with only duplicate values
+	 * @return ArrayList<Card> a hand with only duplicate values
 	 */
 	public ArrayList<Card> checkForMultipleCards(int n) {
 		ArrayList<Card> multiHand = new ArrayList<Card>();
@@ -257,7 +259,8 @@ public class Hand {
 								multi.remove(num);
 								break;
 							} else {
-								System.out.println("Invalid Command! Overflow.");
+								System.out
+										.println("Invalid Command! Overflow.");
 							}
 						} else {
 							System.out.println("Invalid Command");
@@ -360,11 +363,8 @@ public class Hand {
 
 	/**
 	 * Skips the other players turn and gives another play on a card.
-	 * 
-	 * @param position
-	 *            location of card in hand
 	 */
-	public void playJ(int position) {
+	public void playJ() {
 		if (!hand.isEmpty()) {
 			System.out.println("Skipped the opponents turn.\n");
 			game.print.gameInterface();
