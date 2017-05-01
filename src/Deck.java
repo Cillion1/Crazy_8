@@ -3,14 +3,14 @@ import java.util.ArrayList;
 /**
  * Defines a deck.
  * 
- * @author Dennis Situ 
- * Last Updated: April 24, 2017
+ * @author Dennis Situ Last Updated: April 24, 2017
  */
 
 public class Deck {
 	ArrayList<Card> deck = new ArrayList<Card>();
 	String[] suits = { "♠", "♥", "♦", "♣" };
-	String[] value = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
+	String[] value = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J",
+			"Q", "K" };
 	Pile pile;
 
 	/**
@@ -31,7 +31,7 @@ public class Deck {
 	/**
 	 * Draws a random card from the deck and removes the card from the deck
 	 * 
-	 * @return a random card from the deck
+	 * @return Card a random card from the deck
 	 */
 	public Card removeCard() {
 		if (deck.size() == 0) {
@@ -70,7 +70,7 @@ public class Deck {
 	/**
 	 * Returns the size of the deck
 	 * 
-	 * @return how many cards in the deck
+	 * @return int how many cards in the deck
 	 */
 	public int getDeckSize() {
 		return deck.size();

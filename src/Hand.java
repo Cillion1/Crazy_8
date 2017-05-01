@@ -9,7 +9,6 @@ import java.util.Scanner;
 public class Hand {
 	Scanner keyb = new Scanner(System.in);
 	ArrayList<Card> hand = new ArrayList<Card>();
-	ArrayList<Card> multi = new ArrayList<Card>();
 	Game game;
 
 	/**
@@ -37,7 +36,7 @@ public class Hand {
 	 * 
 	 * @param position
 	 *            location of where the card is
-	 * @return the card in position
+	 * @return Card the card in position
 	 */
 	public Card removeCard(int position) {
 		return hand.remove(position);
@@ -124,7 +123,7 @@ public class Hand {
 	 */
 	public void playCard() {
 		do {
-			// Checks to see if input is 0 or higher
+			// The input that the user types in
 			game.input = keyb.next();
 			if (game.input.equalsIgnoreCase("S")) {
 				sort();
@@ -138,22 +137,27 @@ public class Hand {
 						System.out.println("The deck is empty.");
 					}
 				} else if (position + 1 <= getHandSize()) {
-					multi = checkForMultipleCards(position);
+					ArrayList<Card> multi = checkForMultipleCards(position);
 					// Checks what type of card it is
 					if (getCard(position).value.equals("8")) {
 						game.pile.addCard(removeCard(position));
 						if (!hand.isEmpty()) {
-							playMultiplesCards();
+							playMultiplesCards(multi);
 							play8();
 							game.deck.addToDeck();
 						}
 						break;
+						// Checks for matching suit or values.
 					} else if (game.currentSuit.equals(getCard(position).suit)
 							|| game.pile.getCard(game.pile.getPileSize() - 1).value
 									.equals(getCard(position).value)) {
+						// If one of the cards values match one of these values,
+						// do extra effects, otherwise, discard the card and
+						// check the hand for any multiple cards with the same
+						// value and break.
 						if (getCard(position).value.equals("J")) {
 							discardCard(position);
-							playMultiplesCards();
+							playMultiplesCards(multi);
 							playJ();
 							if (hand.size() == 0) {
 								break;
@@ -161,13 +165,13 @@ public class Hand {
 						} else if (getCard(position).value.equals("2")) {
 							discardCard(position);
 							if (!hand.isEmpty()) {
-								playMultiplesCards();
+								playMultiplesCards(multi);
 								play2();
 							}
 							break;
 						} else {
 							discardCard(position);
-							playMultiplesCards();
+							playMultiplesCards(multi);
 							break;
 						}
 
@@ -188,7 +192,7 @@ public class Hand {
 	 * 
 	 * @param n
 	 *            location of where card is in the players hand
-	 * @return ArrayList<Card> a hand with only duplicate values
+	 * @return ArrayList<Card> a hand with only cards of duplicate values.
 	 */
 	public ArrayList<Card> checkForMultipleCards(int n) {
 		ArrayList<Card> multiHand = new ArrayList<Card>();
@@ -219,14 +223,16 @@ public class Hand {
 	 * the multi hand and the original hand if played. Any card in the multi
 	 * hand then gets thrown back into the original hand
 	 */
-	public void playMultiplesCards() {
+	public void playMultiplesCards(ArrayList<Card> multi) {
 		do {
+			// Only play when when the multi hand has duplicate values.
 			if (!multi.isEmpty()) {
 				System.out
 						.println("You have multiple cards! Would you like to play any?\n\n(Y)es or (N)o");
 				game.input = keyb.next();
 				if (game.input.equalsIgnoreCase("Y")) {
 					System.out.println("Which card would you like to play?");
+					// Prints out the hand
 					for (int i = 1; i < multi.size() + 1; i++) {
 						if (multi.get(i - 1).value.equals("10")) {
 							System.out.print(" ");
@@ -241,9 +247,12 @@ public class Hand {
 					System.out.println(multi);
 					do {
 						game.input = keyb.next();
+						// Only accepts integers
 						if (Character.isDigit(game.input.charAt(0))) {
 							int num = Integer.parseInt(game.input) - 1;
 							if (num + 1 <= multi.size()) {
+								// Loops through the original hand to find the
+								// same cards and remove it from the hand.
 								for (int i = 0; i < hand.size(); i++) {
 									if (multi.get(num).value
 											.equals(hand.get(i).value)
@@ -253,6 +262,9 @@ public class Hand {
 										break;
 									}
 								}
+								// Add the card from the multi hand into the
+								// pile and update the current suit. Remove the
+								// card from the multi hand afterwards.
 								game.pile.addCard(multi.get(num));
 								game.currentSuit = game.pile.getCard(game.pile
 										.getPileSize() - 1).suit;
@@ -276,6 +288,7 @@ public class Hand {
 				break;
 			}
 		} while (true);
+		// Add every unplayed card back into the hand.
 		for (int i = 0; i < multi.size(); i++) {
 			hand.add(multi.get(i));
 		}
@@ -368,6 +381,7 @@ public class Hand {
 		if (!hand.isEmpty()) {
 			System.out.println("Skipped the opponents turn.\n");
 			game.print.gameInterface();
+			game.print.numberList(this);
 			System.out.println(hand + "\n");
 			if (this.equals(game.handOne)) {
 				System.out.println("Player 1's turn");

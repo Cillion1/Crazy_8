@@ -4,8 +4,7 @@ import java.util.ArrayList;
  * Description: Defines a pile as a stack of cards. Cards played from the hand
  * are thrown here.
  * 
- * @author Dennis Situ 
- * Last Updated: April 24, 2017
+ * @author Dennis Situ Last Updated: April 24, 2017
  */
 
 public class Pile {
@@ -26,7 +25,7 @@ public class Pile {
 	 * 
 	 * @param position
 	 *            the location of the card
-	 * @return the card in that position
+	 * @return int the card in that position
 	 */
 	public Card removeCard(int position) {
 		return pile.remove(position);
@@ -35,7 +34,7 @@ public class Pile {
 	/**
 	 * Grabs the amount of cards in the pile
 	 * 
-	 * @return amount of cards in the pile
+	 * @return int amount of cards in the pile
 	 */
 	public int getPileSize() {
 		return pile.size();
@@ -46,7 +45,7 @@ public class Pile {
 	 * 
 	 * @param position
 	 *            location of card
-	 * @return the card in that position
+	 * @return Card the card in that position
 	 */
 	public Card getCard(int position) {
 		return pile.get(position);

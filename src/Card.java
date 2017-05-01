@@ -2,8 +2,7 @@
  * Description: Defines what a card is and converts the corresponding values or
  * suit into integers
  * 
- * @author Dennis Situ 
- * Last Updated: April 24, 2017
+ * @author Dennis Situ Last Updated: April 24, 2017
  */
 
 public class Card {
@@ -25,7 +24,7 @@ public class Card {
 	/**
 	 * Assigns a suit to a value
 	 * 
-	 * @return the number that suit corresponds
+	 * @return int the number that suit corresponds
 	 */
 	public int suitToInt() {
 		switch (suit) {
@@ -45,7 +44,7 @@ public class Card {
 	/**
 	 * Assigns a value to a number
 	 * 
-	 * @return the number that value corresponds
+	 * @return int the number that value corresponds
 	 */
 	public int valueToInt() {
 		switch (value) {

@@ -69,7 +69,7 @@ public class Print {
 	 * Prints the numbers on top of the array list
 	 * 
 	 * @param hand
-	 *            players hand
+	 *            the hand passed in
 	 */
 	public void numberList(Hand hand) {
 		for (int i = 1; i < hand.getHandSize() + 1; i++) {
@@ -90,7 +90,7 @@ public class Print {
 	 * players hand
 	 * 
 	 * @param turn
-	 *            whose turn it is
+	 *            determine who's turn it is
 	 */
 	public void hand(boolean turn) {
 		if (turn) {
