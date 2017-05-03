@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Allows the players to play a card from the hand.
+ * Handles all actions related to a (player's) hand                     
  * 
  * @author Dennis Situ Last Updated: April 24, 2017
  */
