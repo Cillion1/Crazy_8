@@ -1,9 +1,9 @@
 import java.util.Scanner;
 
 /**
- * Description: Prints back text.
+ * Handles all printing chunks.
  * 
- * @author Dennis Situ Last Updated: April 24, 2017
+ * @author Dennis Situ Last Updated: May 4, 2017
  */
 public class Print {
 	Scanner keyb = new Scanner(System.in);

@@ -4,7 +4,7 @@ import java.util.Scanner;
 /**
  * Handles all actions related to a (player's) hand                     
  * 
- * @author Dennis Situ Last Updated: April 24, 2017
+ * @author Dennis Situ Last Updated: May 4, 2017
  */
 public class Hand {
 	Scanner keyb = new Scanner(System.in);

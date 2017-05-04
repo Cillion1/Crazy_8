@@ -2,7 +2,7 @@
  * Description: Defines what a card is and converts the corresponding values or
  * suit into integers
  * 
- * @author Dennis Situ Last Updated: April 24, 2017
+ * @author Dennis Situ Last Updated: May 4, 2017
  */
 
 public class Card {

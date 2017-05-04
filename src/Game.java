@@ -3,7 +3,7 @@ import java.util.Scanner;
 /**
  * Description: Constructs the game
  * 
- * @author Dennis Situ Last Updated: April 24, 2017
+ * @author Dennis Situ Last Updated: May 4, 2017
  */
 
 public class Game {
