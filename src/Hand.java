@@ -115,6 +115,7 @@ public class Hand {
 		hand = newHand;
 	}
 
+	
 	/**
 	 * Plays a card from the players hand. Check input of string or number and
 	 * parse it into an integer. Checks the matching suit from the card played
@@ -144,7 +145,7 @@ public class Hand {
 						if (!hand.isEmpty()) {
 							playMultiplesCards(multi);
 							play8();
-							game.deck.addToDeck();
+							game.deck.reInitialize();
 						}
 						break;
 						// Checks for matching suit or values.
@@ -203,7 +204,22 @@ public class Hand {
 		}
 		return multiHand;
 	}
-
+	
+	public void playAnotherCard() {
+		System.out.println("You have picked up " + getCard(getHandSize() - 1) + ", would you like to play it?");
+		do {
+			game.input = keyb.next();
+			if (game.input.equalsIgnoreCase("y")) {
+				discardCard(getHandSize() - 1);
+				break;
+			} else if (game.input.equalsIgnoreCase("n")) {
+				break;
+			} else {
+				System.out.println("Invalid Command!");
+			}
+		} while (true);
+	}
+	
 	/**
 	 * Picks up a card from the deck to the hand.
 	 */
@@ -214,7 +230,12 @@ public class Hand {
 			System.out.println("Player 2 has picked up a card.");
 		}
 		addCard(game.deck.removeCard());
-		game.deck.addToDeck();
+		if (game.currentSuit.equals(getCard(getHandSize() - 1).suit)
+				|| game.pile.getCard(game.pile.getPileSize() - 1).value
+				.equals(getCard(getHandSize() - 1).value)) {
+			playAnotherCard();
+		}
+		game.deck.reInitialize();
 	}
 
 	/**
@@ -371,7 +392,7 @@ public class Hand {
 	public void discardCard(int position) {
 		game.pile.addCard(removeCard(position));
 		game.currentSuit = game.pile.getCard(game.pile.getPileSize() - 1).suit;
-		game.deck.addToDeck();
+		game.deck.reInitialize();
 	}
 
 	/**

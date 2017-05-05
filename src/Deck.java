@@ -59,7 +59,7 @@ public class Deck {
 	/**
 	 * Add cards from the pile to the deck if the deck is low on cards.
 	 */
-	public void addToDeck() {
+	public void reInitialize() {
 		if (deck.size() < 16 && pile.getPileSize() - 1 >= 8) {
 			do {
 				addCard(pile.removeCard(0));
