@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Handles all actions related to a (player's) hand                     
+ * Handles all actions related to a (player's) hand
  * 
  * @author Dennis Situ Last Updated: May 4, 2017
  */
@@ -87,7 +87,7 @@ public class Hand {
 		}
 		hand = newHand;
 	}
-
+	
 	/**
 	 * Sorts the cards in the hand so that cards are sorted into order of
 	 * increasing value. Cards with the same value are sorted by suit. Note that
@@ -115,7 +115,6 @@ public class Hand {
 		hand = newHand;
 	}
 
-	
 	/**
 	 * Plays a card from the players hand. Check input of string or number and
 	 * parse it into an integer. Checks the matching suit from the card played
@@ -204,13 +203,28 @@ public class Hand {
 		}
 		return multiHand;
 	}
-	
-	public void playAnotherCard() {
-		System.out.println("You have picked up " + getCard(getHandSize() - 1) + ", would you like to play it?");
+
+	/**
+	 * Plays the card that the player picked up
+	 */
+	public void playPickedUpCard() {
+		System.out.println("You have picked up " + getCard(getHandSize() - 1)
+				+ ", would you like to play it?");
 		do {
 			game.input = keyb.next();
 			if (game.input.equalsIgnoreCase("y")) {
 				discardCard(getHandSize() - 1);
+				if (game.pile.getCard(game.pile.getPileSize() - 1).value
+						.equals("8")) {
+					play8();
+				} else if (game.pile.getCard(game.pile.getPileSize() - 1).value
+						.equals("2")) {
+					play2();
+				} else if (game.pile.getCard(game.pile.getPileSize() - 1).value
+						.equals("J")) {
+					playJ();
+					playCard();
+				}
 				break;
 			} else if (game.input.equalsIgnoreCase("n")) {
 				break;
@@ -219,21 +233,22 @@ public class Hand {
 			}
 		} while (true);
 	}
-	
+
 	/**
-	 * Picks up a card from the deck to the hand.
+	 * Picks up a card from the deck to the hand. Plays the card that was picked
+	 * into the pile if the card is valid.
 	 */
 	public void pickUpCard() {
-		if (this.equals(game.handOne)) {
-			System.out.println("Player 1 has picked up a card.");
-		} else {
-			System.out.println("Player 2 has picked up a card.");
-		}
 		addCard(game.deck.removeCard());
 		if (game.currentSuit.equals(getCard(getHandSize() - 1).suit)
 				|| game.pile.getCard(game.pile.getPileSize() - 1).value
-				.equals(getCard(getHandSize() - 1).value)) {
-			playAnotherCard();
+						.equals(getCard(getHandSize() - 1).value)
+				|| getCard(getHandSize() - 1).value.equals("8")) {
+			playPickedUpCard();
+		} else if (this.equals(game.handOne)) {
+			System.out.println("Player 1 has picked up a card.");
+		} else {
+			System.out.println("Player 2 has picked up a card.");
 		}
 		game.deck.reInitialize();
 	}
