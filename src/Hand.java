@@ -87,7 +87,7 @@ public class Hand {
 		}
 		hand = newHand;
 	}
-	
+
 	/**
 	 * Sorts the cards in the hand so that cards are sorted into order of
 	 * increasing value. Cards with the same value are sorted by suit. Note that
@@ -208,12 +208,14 @@ public class Hand {
 	 * Plays the card that the player picked up
 	 */
 	public void playPickedUpCard() {
+		ArrayList<Card> multi = checkForMultipleCards(getHandSize() - 1);
 		System.out.println("You have picked up " + getCard(getHandSize() - 1)
-				+ ", would you like to play it?");
+				+ ", would you like to play it? (Y/N)");
 		do {
 			game.input = keyb.next();
 			if (game.input.equalsIgnoreCase("y")) {
 				discardCard(getHandSize() - 1);
+				playMultiplesCards(multi);
 				if (game.pile.getCard(game.pile.getPileSize() - 1).value
 						.equals("8")) {
 					play8();
@@ -340,19 +342,19 @@ public class Hand {
 			game.input = keyb.next();
 			if (game.input.equalsIgnoreCase("S")) {
 				game.currentSuit = "♠";
-				System.out.println("New suit is Spades.\n");
+				System.out.println("New suit is Spades (♠).\n");
 				break;
 			} else if (game.input.equalsIgnoreCase("H")) {
 				game.currentSuit = "♥";
-				System.out.println("New suit is Hearts.\n");
+				System.out.println("New suit is Hearts (♥).\n");
 				break;
 			} else if (game.input.equalsIgnoreCase("C")) {
 				game.currentSuit = "♣";
-				System.out.println("New suit is Clubs.\n");
+				System.out.println("New suit is Clubs (♣).\n");
 				break;
 			} else if (game.input.equalsIgnoreCase("D")) {
 				game.currentSuit = "♦";
-				System.out.println("New suit is Diamonds.\n");
+				System.out.println("New suit is Diamonds (♦).\n");
 				break;
 			} else {
 				System.out
