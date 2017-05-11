@@ -39,7 +39,7 @@ public class Game {
 					break;
 				}
 			} while (true);
-			resetGame();
+			reset();
 		} while (!end());
 		System.out.println("Quiting game.");
 	}
@@ -47,7 +47,7 @@ public class Game {
 	/**
 	 * Empties out the hand and the pile back to the deck
 	 */
-	public void resetGame() {
+	public void reset() {
 		while (pile.getPileSize() > 0) {
 			deck.addCard(pile.removeCard(0));
 		}
