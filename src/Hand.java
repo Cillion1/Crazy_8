@@ -262,66 +262,66 @@ public class Hand {
 	 * hand then gets thrown back into the original hand
 	 */
 	public void playMultiplesCards(ArrayList<Card> multi) {
+		boolean ifPlayed = false;
 		do {
 			// Only play when when the multi hand has duplicate values.
 			if (!multi.isEmpty()) {
 				System.out
 						.println("You have multiple cards! Would you like to play any?\n\n(Y)es or (N)o");
-				game.input = keyb.next();
-				if (game.input.equalsIgnoreCase("Y")) {
-					System.out.println("Which card would you like to play?");
-					// Prints out the hand
-					for (int i = 1; i < multi.size() + 1; i++) {
-						if (multi.get(i - 1).value.equals("10")) {
-							System.out.print(" ");
-						}
-						if (i <= 10) {
-							System.out.print("   " + i + "   ");
-						} else if (i > 10) {
-							System.out.print("  " + i + "   ");
-						}
-					}
-					System.out.println("");
-					System.out.println(multi);
-					do {
-						game.input = keyb.next();
-						// Only accepts integers
-						if (Character.isDigit(game.input.charAt(0))) {
-							int num = Integer.parseInt(game.input) - 1;
-							if (num + 1 <= multi.size()) {
-								// Loops through the original hand to find the
-								// same cards and remove it from the hand.
-								for (int i = 0; i < hand.size(); i++) {
-									if (multi.get(num).value
-											.equals(hand.get(i).value)
-											&& multi.get(num).suit.equals(hand
-													.get(i).suit)) {
-										hand.remove(i);
-										break;
+				do {
+					game.input = keyb.next();
+					if (game.input.equalsIgnoreCase("Y")) {
+						System.out
+								.println("Which card would you like to play?");
+						// Prints out the hand
+						game.print.numberList(multi);
+						System.out.println(multi);
+						do {
+							game.input = keyb.next();
+							// Only accepts integers
+							if (Character.isDigit(game.input.charAt(0))) {
+								int num = Integer.parseInt(game.input) - 1;
+								if (num + 1 <= multi.size()) {
+									// Loops through the original hand to find
+									// the
+									// same cards and remove it from the hand.
+									for (int i = 0; i < hand.size(); i++) {
+										if (multi.get(num).value.equals(hand
+												.get(i).value)
+												&& multi.get(num).suit
+														.equals(hand.get(i).suit)) {
+											hand.remove(i);
+											break;
+										}
 									}
+									// Add the card from the multi hand into the
+									// pile and update the current suit. Remove
+									// the
+									// card from the multi hand afterwards.
+									game.pile.addCard(multi.get(num));
+									game.currentSuit = game.pile
+											.getCard(game.pile.getPileSize() - 1).suit;
+									multi.remove(num);
+									ifPlayed = true;
+									break;
+								} else {
+									System.out
+											.println("Invalid Command! Overflow.");
 								}
-								// Add the card from the multi hand into the
-								// pile and update the current suit. Remove the
-								// card from the multi hand afterwards.
-								game.pile.addCard(multi.get(num));
-								game.currentSuit = game.pile.getCard(game.pile
-										.getPileSize() - 1).suit;
-								multi.remove(num);
-								break;
 							} else {
-								System.out
-										.println("Invalid Command! Overflow.");
+								System.out.println("Invalid Command");
 							}
-						} else {
-							System.out.println("Invalid Command");
-						}
-					} while (true);
-				} else if (game.input.equalsIgnoreCase("N")) {
-					multi.clear();
-					break;
-				} else {
-					System.out.println("Invalid Command!");
-				}
+						} while (true);
+					} else if (game.input.equalsIgnoreCase("N")) {
+						multi.clear();
+						break;
+					} else {
+						System.out.println("Invalid Command!");
+					}
+					if (ifPlayed) {
+						break;
+					}
+				} while (true);
 			} else {
 				break;
 			}
