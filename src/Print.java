@@ -71,7 +71,7 @@ public class Print {
 	}
 
 	/**
-	 * Prints the numbers on top of the array list
+	 * Prints the numbers on top of the hand
 	 * 
 	 * @param hand
 	 *            the hand passed in
@@ -90,6 +90,12 @@ public class Print {
 		System.out.println("");
 	}
 
+	/**
+	 * Prints the numbers on top of the array list
+	 * 
+	 * @param hand
+	 *            the hand passed in
+	 */
 	public void numberList(ArrayList<Card> hand) {
 		for (int i = 1; i < hand.size() + 1; i++) {
 			if (hand.get(i - 1).value.equals("10")) {
